@@ -7,8 +7,8 @@ provider "aws" {
 variable "vpc_cidr_block" {}
 variable "subnet_cidr_block" {}
 variable "avail_zone" {}
-
 variable "env_prefix" {}
+variable "my_ip" {}
 
 # VPC
 resource "aws_vpc" "myapp-vpc" {
@@ -47,4 +47,35 @@ resource "aws_default_route_table" "main-rtb" {
     tags = {
       "Name" = "${var.env_prefix}main-rtb"
     }
+}
+
+# Security group
+
+resource "aws_security_group" "myapp-sg" {
+    name = "myapp-sg"
+    vpc_id = aws_vpc.myapp-vpc.id
+    #traffic ingoing (SSH)
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = [ "${var.my_ip}" ]
+    }
+    ingress {
+        from_port = 8080
+        to_port = 8080
+        protocol = "tcp"
+        cidr_blocks = [ "0.0.0.0/0" ]
+    }
+    #outgoing traffic 
+    egress {
+        from_port = 0 
+        to_port = 0
+        protocol = "-1" # any protocol
+        cidr_blocks = []
+    }
+    tags = {
+        Name:"${var.env_prefix}-sg"
+    }
+  
 }
