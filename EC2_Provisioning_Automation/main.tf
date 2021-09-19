@@ -1,41 +1,29 @@
 provider "aws" {
-    region = "eu-west-3"
-    access_key = ""
-    secret_key = ""
+    region = "eu-west-3" 
 }
 
 # Variables
 
-variable "cidr_block" {
-  description = " cidr blocks for vpc and subnet" 
-  #default = "10.0.10.0/24" # if terraform can find value for the variable
-  type = list(object({
-      cidr_block = string
-      name = string
-  })) # variable type force use to use the correct type
-}
+variable "vpc_cidr_block" {}
+variable "subnet_cidr_block" {}
+variable "avail_zone" {}
+
+variable "env_prefix" {}
+
 # VPC
-resource "aws_vpc" "development-vpc" {
-    cidr_block = var.cidr_block[0].cidr_block
+resource "aws_vpc" "myapp-vpc" {
+    cidr_block = var.vpc_cidr_block
     tags= {
-        Name: var.cidr_block[0].name
+        Name: "${var.env_prefix}-vpc"
     }
 }
 # Subnet
-resource "aws_subnet" "dev-subnet1" {
-    vpc_id = aws_vpc.development-vpc.id
-    #cidr_block = "10.0.0.0/16"
-    cidr_block = var.cidr_block[1].cidr_block
-    availability_zone = "eu-west-3a"
+resource "aws_subnet" "myapp-subnet-1" {
+    vpc_id = aws_vpc.myapp-vpc.id
+    cidr_block = var.subnet_cidr_block
+    availability_zone = var.avail_zone
     tags = {
-        Name: var.cidr_block[1].name
+        Name: "${var.env_prefix}-subnet-1"
     }
 }
 
-# Output the id of the vpc and subnet
-output "dev-vpc-id" {
-    value = aws_vpc.development-vpc.id
-}
-output "dev-subnet-id" {
-    value = aws_subnet.dev-subnet1.id
-}
