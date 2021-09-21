@@ -1,9 +1,8 @@
-# EC2_Provisioning_Automation using Terraform
-
+# EKS_provisioning_automation using Terraform
 
 #### Intro:
-` Build infrastructure using terraform`
+` Build infrastructure using terraform ( VPC , EKS CLUSTER ) Using Models`
 `Deploy infrastructure to aws`
-`Start docker nginx server using bootstrap script `
+`Deploy application to EKS`
 
 
