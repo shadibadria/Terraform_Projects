@@ -1,2 +1,2 @@
-# `Terraform Projets`
+# `Terraform Projects`
 
